@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json({ limit: '100mb' }));
@@ -30,7 +30,7 @@ fs.readdirSync(v2Dir).forEach(file => {
     if (routeName === 'playback' || routeName === 'docs_master') {
       catchAlls.push({ routeName, hyphenatedName, route });
     } else {
-      app.use(`/api/v2`, route);
+      // app.use(`/api/v2`, route);
       app.use(`/api/v2/${routeName}`, route);
       if (routeName !== hyphenatedName) {
         app.use(`/api/v2/${hyphenatedName}`, route);
