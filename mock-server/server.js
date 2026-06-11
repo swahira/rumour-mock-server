@@ -40,6 +40,9 @@ fs.readdirSync(v2Dir).forEach(file => {
   }
 });
 
+// Generic /api/v2/headers fallback endpoint
+app.get('/api/v2/headers', (req, res) => res.json(req.headers));
+
 // Mount catch-alls last so they don't intercept specific routes
 catchAlls.forEach(({ routeName, hyphenatedName, route }) => {
   app.use(`/api/v2`, route);
