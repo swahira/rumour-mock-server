@@ -1,9 +1,0 @@
-[suite]
-name = "Hard Heal Demonstration Suite"
-ordered = true
-
-requests = [
-  "2_create_user.toml",
-  "3_break_state.toml",
-  "4_get_user_needs_heal.toml"
-]

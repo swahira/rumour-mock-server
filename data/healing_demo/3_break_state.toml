@@ -1,3 +1,0 @@
-[request]
-method = "DELETE"
-url = "{{base_url}}/api/v2/users/{{user_id}}"

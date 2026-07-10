@@ -1,6 +1,0 @@
-[headers]
-X-Rumour-Global = "Enabled"
-User-Agent = "Rumour-Stress-Bot"
-
-[variables]
-global_timeout = "5000"

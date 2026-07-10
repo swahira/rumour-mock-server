@@ -1,7 +1,0 @@
-
-[request]
-method = "POST"
-url = "{{base_url}}/auth/api-keys"
-
-[extract]
-new_key_id = "id"

@@ -1,4 +1,0 @@
-
-[request]
-method = "POST"
-url = "{{base_url}}/auth/features"
