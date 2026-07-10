@@ -1,7 +1,0 @@
-[request]
-method = "DELETE"
-url = "{{base_url}}/api/v2/users/{{issue_id}}"
-
-[body]
-type = "json"
-raw = "{\"also_delete_parent\": \"{{project_id}}\"}"

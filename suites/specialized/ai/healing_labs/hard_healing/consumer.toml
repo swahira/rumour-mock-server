@@ -1,6 +1,0 @@
-[request]
-method = "GET"
-url = "http://localhost:3000/api/v2/products/{{potion_creator.product_id}}"
-
-[assert]
-status = 200

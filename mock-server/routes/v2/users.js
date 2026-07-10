@@ -17,6 +17,39 @@ router.get('/', (req, res) => {
     res.json(filtered);
 });
 
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
+const SECRET = 'rumour-super-secret';
+const USERS_FILE = path.resolve(__dirname, '../../data/users.json');
+
+router.get('/profile', (req, res) => {
+    const auth = req.headers.authorization;
+    if (!auth || !auth.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized', message: 'Token required' });
+    }
+    
+    const token = auth.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, SECRET);
+        const registeredUsers = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8') || '[]');
+        
+        // Find user by email from token
+        const user = registeredUsers.find(u => u.email === decoded.email);
+        
+        if (!user) {
+            return res.status(404).json({ 
+                error: 'Not Found', 
+                message: `Profile for user ${decoded.email} does not exist. It must be created via registration.` 
+            });
+        }
+        
+        res.json({ id: user.id, username: user.name || user.username, email: user.email, role: user.role });
+    } catch (e) {
+        res.status(401).json({ error: 'Unauthorized', message: 'Invalid token' });
+    }
+});
+
 router.post('/profile', (req, res) => {
     const { username, email } = req.body;
     if (email === null) return res.status(400).json({ error: 'Email cannot be null' });
@@ -41,8 +74,28 @@ router.post('/register', (req, res) => {
     res.json({ success: true });
 });
 
+const loadRegisteredUsers = () => {
+    try {
+        const data = fs.readFileSync(USERS_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (e) {
+        return [];
+    }
+};
+
+const saveRegisteredUsers = (users) => {
+    try {
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+    } catch (e) {
+        console.error(`[USERS] Error saving users:`, e.message);
+    }
+};
+
 router.get('/:id', (req, res) => {
-    const user = users.find(u => u.id == req.params.id);
+    const id = req.params.id;
+    const registeredUsers = loadRegisteredUsers();
+    const user = registeredUsers.find(u => u.id == id) || users.find(u => u.id == id);
+    
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
 });
@@ -51,12 +104,24 @@ router.delete('/:id', (req, res) => {
     const id = req.params.id;
     const { also_delete_parent } = req.body || {};
 
+    // 1. Delete from persistent store
+    let registeredUsers = loadRegisteredUsers();
+    const regIndex = registeredUsers.findIndex(u => u.id == id);
+    if (regIndex !== -1) {
+        registeredUsers.splice(regIndex, 1);
+        saveRegisteredUsers(registeredUsers);
+    }
+
+    // 2. Delete from in-memory (fallback/legacy)
     const index = users.findIndex(u => u.id == id);
     if (index !== -1) users.splice(index, 1);
 
     if (also_delete_parent) {
-        const pIndex = users.findIndex(u => u.id == also_delete_parent);
-        if (pIndex !== -1) users.splice(pIndex, 1);
+        const pIndex = registeredUsers.findIndex(u => u.id == also_delete_parent);
+        if (pIndex !== -1) {
+            registeredUsers.splice(pIndex, 1);
+            saveRegisteredUsers(registeredUsers);
+        }
     }
 
     res.status(204).end();

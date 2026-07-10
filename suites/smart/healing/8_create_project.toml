@@ -1,8 +1,0 @@
-[request]
-method = "POST"
-url = "{{base_url}}/api/v2/users"
-# We'll use users route as project for simplicity
-[body]
-raw = '{"username": "Project-X"}'
-[extract]
-project_id = "id"

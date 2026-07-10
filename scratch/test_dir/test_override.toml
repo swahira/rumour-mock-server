@@ -1,7 +1,0 @@
-[request]
-method = "GET"
-url = "http://localhost:3000/api/ping?msg={{test_var}}"
-body = { type = "json", raw = "{\"msg\": \"{{test_var}}\"}" }
-
-[extract]
-echo_msg = "msg"

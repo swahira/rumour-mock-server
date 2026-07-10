@@ -1,6 +1,0 @@
-[request]
-method = "GET"
-url = "https://raw.githubusercontent.com/rafaelreis-hotmart/Audio-Sample-files/master/sample.mp3"
-
-[params]
-utm_source = "chatgpt.com"

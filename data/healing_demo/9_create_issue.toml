@@ -1,7 +1,0 @@
-[request]
-method = "POST"
-url = "{{base_url}}/api/v2/users"
-[body]
-raw = '{"username": "Issue-1", "project": "{{project_id}}"}'
-[extract]
-issue_id = "id"

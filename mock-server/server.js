@@ -2,16 +2,17 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 app.use((req, res, next) => {
-  console.log(`[DEBUG] ${req.method} ${req.url} - Content-Type: ${req.headers['content-type']}`);
+  console.log(`[DEBUG] ${req.method} ${req.originalUrl} (path: ${req.path})`);
   next();
 });
+
 
 // 1. Dynamic Topic Module Loader
 // We will create individual files in routes/v2 for every topic you listed
@@ -29,7 +30,7 @@ fs.readdirSync(v2Dir).forEach(file => {
     if (routeName === 'playback' || routeName === 'docs_master') {
       catchAlls.push({ routeName, hyphenatedName, route });
     } else {
-      app.use(`/api/v2`, route);
+      // app.use(`/api/v2`, route);
       app.use(`/api/v2/${routeName}`, route);
       if (routeName !== hyphenatedName) {
         app.use(`/api/v2/${hyphenatedName}`, route);
@@ -38,6 +39,9 @@ fs.readdirSync(v2Dir).forEach(file => {
     }
   }
 });
+
+// Generic /api/v2/headers fallback endpoint
+app.get('/api/v2/headers', (req, res) => res.json(req.headers));
 
 // Mount catch-alls last so they don't intercept specific routes
 catchAlls.forEach(({ routeName, hyphenatedName, route }) => {

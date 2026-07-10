@@ -1,9 +1,0 @@
-[request]
-method = "POST"
-url = "{{base_url}}/api/echo"
-body = '{"id": "{{id}}", "name": "{{name}}", "role": "{{role}}"}'
-
-[assertions]
-"json.body.id" = "{{id}}"
-"json.body.name" = "{{name}}"
-"status" = 200
