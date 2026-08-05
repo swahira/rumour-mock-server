@@ -2,6 +2,12 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 
+// Middleware to set Server header for all httpbin compatibility routes
+router.use((req, res, next) => {
+    res.setHeader('Server', 'rumour-mock-server');
+    next();
+});
+
 // Helper to format responses like httpbin
 const formatHttpBinResponse = (req) => {
     return {
@@ -34,11 +40,7 @@ router.post('/post', (req, res) => {
     res.json(formatHttpBinResponse(req));
 });
 
-/**
- * /anything
- * Returns request data, including method, for any HTTP method.
- */
-router.all('/anything*', (req, res) => {
+router.all(['/anything', '/anything/*splat'], (req, res) => {
     res.json({
         ...formatHttpBinResponse(req),
         method: req.method

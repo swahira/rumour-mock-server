@@ -77,7 +77,7 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Mock httpbin.org endpoints for documentation examples
+// Mock server endpoints for documentation examples
 app.use('/', require('./routes/httpbin'));
 
 // Legacy routes for backward compatibility during transition
