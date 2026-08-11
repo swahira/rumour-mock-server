@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package echo;
+
+service EchoService {
+  rpc Echo (EchoRequest) returns (EchoResponse);
+  rpc Ping (PingRequest) returns (PingResponse);
+}
+
+message EchoRequest {
+  string message = 1;
+  int32  value   = 2;
+}
+
+message EchoResponse {
+  string echo            = 1;
+  int32  received_value  = 2;
+  string timestamp       = 3;
+}
+
+message PingRequest {
+  string payload = 1;
+}
+
+message PingResponse {
+  string pong      = 1;
+  bool   ok        = 2;
+}

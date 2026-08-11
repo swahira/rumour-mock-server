@@ -5,7 +5,8 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // Middleware
-app.use(express.json({ limit: '100mb' }));
+// Accept JSON body for any Content-Type (Rumour's GraphQL handler may omit Content-Type header)
+app.use(express.json({ limit: '100mb', type: () => true }));
 app.use(express.urlencoded({ extended: true, limit: '100mb' }));
 
 app.use((req, res, next) => {
