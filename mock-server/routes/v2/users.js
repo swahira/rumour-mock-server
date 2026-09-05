@@ -128,3 +128,20 @@ router.delete('/:id', (req, res) => {
 });
 
 module.exports = router;
+
+router.put('/:id', (req, res) => {
+    const id = req.params.id;
+    let registeredUsers = loadRegisteredUsers();
+    let user = registeredUsers.find(u => u.id == id);
+    if (user) {
+        Object.assign(user, req.body);
+        saveRegisteredUsers(registeredUsers);
+        return res.json(user);
+    }
+    let idx = users.findIndex(u => u.id == id);
+    if (idx !== -1) {
+        Object.assign(users[idx], req.body);
+        return res.json(users[idx]);
+    }
+    res.status(404).json({ error: 'User not found' });
+});

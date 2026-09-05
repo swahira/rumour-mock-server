@@ -95,6 +95,24 @@ app.get('/', (req, res) => {
   });
 });
 
+const { fork } = require('child_process');
+
+const spawnSubServer = (file) => {
+  const p = fork(path.join(__dirname, file));
+  p.on('error', (err) => console.error(`Failed to start ${file}:`, err));
+  return p;
+};
+
+const wsProcess = spawnSubServer('ws_server.js');
+const grpcProcess = spawnSubServer('grpc_server.js');
+const mqttProcess = spawnSubServer('mqtt_server.js');
+
+process.on('exit', () => {
+  wsProcess.kill();
+  grpcProcess.kill();
+  mqttProcess.kill();
+});
+
 app.listen(PORT, () => {
   console.log(`\x1b[35m[MASTER]\x1b[0m Server initialized at http://localhost:${PORT}`);
 });
